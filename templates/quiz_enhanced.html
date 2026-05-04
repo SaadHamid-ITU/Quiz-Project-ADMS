@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Take Quiz</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; min-height: 100vh; }
+        .container { max-width: 900px; margin: 0 auto; }
+        .header { background: white; border-radius: 20px; padding: 20px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
+        .timer { font-size: 32px; font-weight: bold; color: #f56565; }
+        .progress { background: #e0e7ff; padding: 10px 20px; border-radius: 20px; font-weight: bold; }
+        .difficulty-badge { padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; margin-left: 10px; }
+        .difficulty-Easy { background: #c6f6d5; color: #22543d; }
+        .difficulty-Medium { background: #feebc8; color: #7b341e; }
+        .difficulty-Hard { background: #fed7d7; color: #742a2a; }
+        .question-card { background: white; border-radius: 20px; padding: 25px; margin-bottom: 20px; transition: transform 0.2s; }
+        .question-card:hover { transform: translateX(5px); }
+        .q-text { font-size: 18px; font-weight: bold; margin-bottom: 20px; }
+        .option { margin: 12px 0; padding: 12px 15px; background: #f7f9fc; border-radius: 12px; cursor: pointer; transition: all 0.2s; }
+        .option:hover { background: #e0e7ff; }
+        .option.selected { background: #c6f6d5; border: 2px solid #48bb78; }
+        input[type="radio"] { margin-right: 12px; cursor: pointer; }
+        label { cursor: pointer; width: 90%; display: inline-block; }
+        .submit-btn { width: 100%; padding: 16px; background: linear-gradient(135deg, #48bb78 0%, #38a169 100%); color: white; border: none; border-radius: 12px; font-size: 18px; cursor: pointer; margin-top: 20px; }
+        .filter-bar { background: white; border-radius: 15px; padding: 15px; margin-bottom: 20px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+        .filter-btn { padding: 8px 16px; border-radius: 20px; text-decoration: none; background: #f0f4ff; color: #667eea; }
+        .filter-btn.active { background: #667eea; color: white; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="filter-bar">
+            <span>Filter by difficulty:</span>
+            <a href="/quiz?difficulty=all" class="filter-btn {% if difficulty == 'all' %}active{% endif %}">All</a>
+            <a href="/quiz?difficulty=Easy" class="filter-btn {% if difficulty == 'Easy' %}active{% endif %}">Easy</a>
+            <a href="/quiz?difficulty=Medium" class="filter-btn {% if difficulty == 'Medium' %}active{% endif %}">Medium</a>
+            <a href="/quiz?difficulty=Hard" class="filter-btn {% if difficulty == 'Hard' %}active{% endif %}">Hard</a>
+        </div>
+        
+        <div class="header">
+            <div class="progress">📊 Progress: <span id="answered">0</span>/<span id="total">0</span></div>
+            <div class="timer">⏱️ <span id="timer">10:00</span></div>
+        </div>
+        
+        <form action="/submit" method="POST" id="quizForm">
+            {% for q in questions %}
+            <div class="question-card" data-qid="{{ loop.index0 }}">
+                <div class="q-text">
+                    <span class="difficulty-badge difficulty-{{ q.difficulty|default('Medium') }}">
+                        {{ q.difficulty|default('Medium') }}
+                    </span>
+                    Question {{ loop.index }}: {{ q.question }}
+                </div>
+                {% for idx, opt in q.shuffled_options %}
+                <div class="option">
+                    <input type="radio" name="answer_{{ loop.index0 }}" value="{{ idx }}" id="q{{ loop.index0 }}_{{ idx }}" onchange="updateProgress()">
+                    <label for="q{{ loop.index0 }}_{{ idx }}">{{ idx }}. {{ opt }}</label>
+                </div>
+                {% endfor %}
+            </div>
+            {% endfor %}
+            
+            <button type="submit" class="submit-btn">✅ Submit Quiz</button>
+        </form>
+    </div>
+    
+    <script>
+        // Get total questions by counting question cards
+        var totalQuestions = document.querySelectorAll('.question-card').length;
+        document.getElementById('total').innerText = totalQuestions;
+        
+        // Timer
+        let time = 600;
+        const timerDisplay = document.getElementById('timer');
+        const timerInterval = setInterval(function() {
+            time--;
+            let minutes = Math.floor(time / 60);
+            let seconds = time % 60;
+            if (seconds < 10) seconds = '0' + seconds;
+            timerDisplay.innerText = minutes + ':' + seconds;
+            if (time <= 0) {
+                clearInterval(timerInterval);
+                alert("Time's up! Submitting your quiz...");
+                document.getElementById('quizForm').submit();
+            }
+        }, 1000);
+        
+        // Update progress function
+        function updateProgress() {
+            let answered = 0;
+            for (let i = 0; i < totalQuestions; i++) {
+                let radios = document.getElementsByName('answer_' + i);
+                for (let j = 0; j < radios.length; j++) {
+                    if (radios[j].checked) {
+                        answered++;
+                        break;
+                    }
+                }
+            }
+            document.getElementById('answered').innerText = answered;
+            
+            if (answered === totalQuestions) {
+                document.getElementById('progress').style.background = '#c6f6d5';
+                document.getElementById('progress').style.color = '#22543d';
+            }
+        }
+        
+        // Highlight selected option on click
+        document.querySelectorAll('.option').forEach(function(opt) {
+            opt.addEventListener('click', function() {
+                var card = this.closest('.question-card');
+                card.querySelectorAll('.option').forEach(function(o) {
+                    o.classList.remove('selected');
+                });
+                this.classList.add('selected');
+            });
+        });
+        
+        // Also update progress when radio changes
+        document.querySelectorAll('input[type="radio"]').forEach(function(radio) {
+            radio.addEventListener('change', function() {
+                updateProgress();
+            });
+        });
+        
+        // Initial progress update
+        setTimeout(updateProgress, 100);
+    </script>
+</body>
+</html>

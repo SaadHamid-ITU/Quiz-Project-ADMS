@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Dashboard</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: #f0f4ff; }
+        .navbar { background: #667eea; color: white; padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; }
+        .container { max-width: 800px; margin: 50px auto; text-align: center; }
+        .card { background: white; border-radius: 20px; padding: 50px; margin: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+        h1 { color: #667eea; margin-bottom: 20px; }
+        .btn { display: inline-block; padding: 15px 40px; background: #667eea; color: white; text-decoration: none; border-radius: 10px; margin: 10px; font-size: 16px; }
+        .btn:hover { background: #5a67d8; }
+        .btn-secondary { background: #48bb78; }
+        .btn-secondary:hover { background: #38a169; }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <h2>📚 Quiz System</h2>
+        <div>
+            <span>Welcome, {{ name }}!</span>
+            <a href="/logout" style="color: white; margin-left: 20px;">Logout</a>
+        </div>
+    </div>
+    <div class="container">
+        <div class="card">
+            <h1>Welcome to the Quiz! 🎯</h1>
+            <p style="margin-bottom: 30px; color: #666;">20 random questions from our question bank. Good luck!</p>
+            <a href="/quiz" class="btn">Start Quiz</a>
+            <a href="/leaderboard" class="btn btn-secondary">View Leaderboard</a>
+        </div>
+    </div>
+</body>
+</html>

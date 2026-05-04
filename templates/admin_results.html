@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>All Results</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: #f0f4ff; padding: 20px; }
+        .container { max-width: 1000px; margin: 0 auto; background: white; border-radius: 20px; padding: 30px; }
+        h1 { color: #667eea; margin-bottom: 20px; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #e0e0e0; }
+        th { background: #667eea; color: white; }
+        .back-btn { background: #718096; color: white; padding: 10px 20px; text-decoration: none; border-radius: 8px; display: inline-block; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>All Student Results</h1>
+        <table>
+            <tr>
+                <th>Student</th>
+                <th>Score</th>
+                <th>Percentage</th>
+            </tr>
+            {% for r in results %}
+            <tr>
+                <td>{{ r.user_name }} ({{ r.user_email }})</td>
+                <td>{{ r.score }}/{{ r.total }}</td>
+                <td>{{ "%.1f"|format(r.percentage) }}%</td>
+            </tr>
+            {% endfor %}
+        </table>
+        <a href="/admin_dashboard" class="back-btn">Back to Dashboard</a>
+    </div>
+</body>
+</html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Manage Questions</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: #f0f4ff; padding: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; background: white; border-radius: 20px; padding: 30px; }
+        h1 { color: #667eea; margin-bottom: 20px; }
+        .add-btn { background: #48bb78; color: white; padding: 10px 20px; text-decoration: none; border-radius: 8px; display: inline-block; margin-bottom: 20px; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #e0e0e0; }
+        th { background: #667eea; color: white; }
+        .delete-btn { background: #f56565; color: white; padding: 5px 10px; text-decoration: none; border-radius: 5px; }
+        .back-btn { background: #718096; color: white; padding: 10px 20px; text-decoration: none; border-radius: 8px; display: inline-block; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Manage Questions</h1>
+        <a href="/admin/add_question" class="add-btn">+ Add New Question</a>
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Question</th>
+                <th>Options</th>
+                <th>Action</th>
+            </tr>
+            {% for q in questions %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ q.question[:50] }}...</td>
+                <td>{{ q.options|join(', ') }}</td>
+                <td><a href="/admin/delete_question/{{ q._id }}" class="delete-btn" onclick="return confirm('Delete this question?')">Delete</a></td>
+            </tr>
+            {% endfor %}
+        </table>
+        <a href="/admin_dashboard" class="back-btn">Back to Dashboard</a>
+    </div>
+</body>
+</html>

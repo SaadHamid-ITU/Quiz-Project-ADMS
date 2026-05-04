@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Question</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 40px; }
+        .container { max-width: 600px; margin: 0 auto; background: white; border-radius: 30px; padding: 40px; }
+        h1 { color: #667eea; margin-bottom: 20px; }
+        input, select, textarea { width: 100%; padding: 12px; margin: 10px 0; border: 2px solid #e0e0e0; border-radius: 10px; }
+        button { width: 100%; padding: 14px; background: #667eea; color: white; border: none; border-radius: 10px; cursor: pointer; }
+        .back-btn { background: #718096; display: inline-block; text-align: center; text-decoration: none; margin-top: 20px; padding: 12px; }
+        a { color: white; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>➕ Add New Question</h1>
+        <form method="POST">
+            <textarea name="question" rows="3" placeholder="Enter question" required></textarea>
+            <input type="text" name="opt1" placeholder="Option 1" required>
+            <input type="text" name="opt2" placeholder="Option 2" required>
+            <input type="text" name="opt3" placeholder="Option 3" required>
+            <input type="text" name="opt4" placeholder="Option 4" required>
+            <select name="correct" required>
+                <option value="1">Correct Option 1</option>
+                <option value="2">Correct Option 2</option>
+                <option value="3">Correct Option 3</option>
+                <option value="4">Correct Option 4</option>
+            </select>
+            <select name="difficulty">
+                <option value="Easy">Easy</option>
+                <option value="Medium" selected>Medium</option>
+                <option value="Hard">Hard</option>
+            </select>
+            <button type="submit">Add Question</button>
+        </form>
+        <a href="/admin/questions" class="back-btn">← Back to Questions</a>
+    </div>
+</body>
+</html>

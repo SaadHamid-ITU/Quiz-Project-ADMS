@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f0f4ff; }
+        .navbar { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; }
+        .navbar a { color: white; text-decoration: none; margin-left: 20px; }
+        .container { max-width: 1400px; margin: 40px auto; padding: 0 20px; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 25px; margin-bottom: 40px; }
+        .stat-card { background: white; border-radius: 20px; padding: 25px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+        .stat-card:hover { transform: translateY(-5px); }
+        .stat-number { font-size: 36px; font-weight: bold; color: #667eea; }
+        .stat-label { color: #666; margin-top: 10px; }
+        .chart-container { background: white; border-radius: 20px; padding: 25px; margin-bottom: 40px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+        .menu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
+        .menu-card { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; border-radius: 20px; text-decoration: none; display: block; transition: transform 0.3s; }
+        .menu-card:hover { transform: translateY(-5px); }
+        .menu-icon { font-size: 40px; margin-bottom: 10px; }
+        .menu-title { font-size: 18px; font-weight: bold; }
+        h2 { margin-bottom: 20px; color: #333; }
+        .difficulty-stats { display: flex; gap: 20px; justify-content: center; margin-top: 20px; flex-wrap: wrap; }
+        .difficulty-box { padding: 20px; border-radius: 15px; text-align: center; min-width: 120px; }
+        .easy { background: #c6f6d5; color: #22543d; }
+        .medium { background: #feebc8; color: #7b341e; }
+        .hard { background: #fed7d7; color: #742a2a; }
+        .difficulty-number { font-size: 28px; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <h2>🎯 Admin Dashboard</h2>
+        <div>
+            <span>Welcome, Admin</span>
+            <a href="/logout">Logout</a>
+        </div>
+    </div>
+    
+    <div class="container">
+        <!-- Stats Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number">{{ total_questions }}</div>
+                <div class="stat-label">Total Questions</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">{{ total_students }}</div>
+                <div class="stat-label">Total Students</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">{{ total_attempts }}</div>
+                <div class="stat-label">Quiz Attempts</div>
+            </div>
+        </div>
+        
+        <!-- Difficulty Distribution -->
+        <div class="chart-container">
+            <h2>📊 Question Difficulty Distribution</h2>
+            <div class="difficulty-stats">
+                <div class="difficulty-box easy">
+                    <div class="difficulty-number">{{ easy_count }}</div>
+                    <div>Easy Questions</div>
+                </div>
+                <div class="difficulty-box medium">
+                    <div class="difficulty-number">{{ medium_count }}</div>
+                    <div>Medium Questions</div>
+                </div>
+                <div class="difficulty-box hard">
+                    <div class="difficulty-number">{{ hard_count }}</div>
+                    <div>Hard Questions</div>
+                </div>
+            </div>
+            <canvas id="difficultyChart" width="400" height="200" style="margin-top: 20px;"></canvas>
+        </div>
+        
+        <!-- Quick Actions Menu -->
+        <div class="menu-grid">
+            <a href="/admin/questions" class="menu-card">
+                <div class="menu-icon">📋</div>
+                <div class="menu-title">Manage Questions</div>
+            </a>
+            <a href="/admin/ai-generate" class="menu-card">
+                <div class="menu-icon">🤖</div>
+                <div class="menu-title">AI Generate</div>
+            </a>
+            <a href="/admin/results" class="menu-card">
+                <div class="menu-icon">📊</div>
+                <div class="menu-title">View Results</div>
+            </a>
+            <a href="/leaderboard" class="menu-card">
+                <div class="menu-icon">🏆</div>
+                <div class="menu-title">Leaderboard</div>
+            </a>
+        </div>
+    </div>
+    
+    <script>
+        // Create chart using values from HTML (no Jinja2 inside script)
+        setTimeout(function() {
+            const easy = parseInt(document.getElementById('easyCount')?.innerText || '0');
+            const medium = parseInt(document.getElementById('mediumCount')?.innerText || '0');
+            const hard = parseInt(document.getElementById('hardCount')?.innerText || '0');
+            
+            const ctx = document.getElementById('difficultyChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Easy', 'Medium', 'Hard'],
+                    datasets: [{
+                        data: [easy, medium, hard],
+                        backgroundColor: ['#48bb78', '#4299e1', '#f56565'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        }, 100);
+    </script>
+</body>
+</html>

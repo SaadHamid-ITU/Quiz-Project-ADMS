@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Quiz History</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f0f4ff; }
+        .navbar { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; }
+        .navbar a { color: white; text-decoration: none; }
+        .container { max-width: 1000px; margin: 40px auto; padding: 0 20px; }
+        h1 { color: #667eea; margin-bottom: 20px; }
+        .card { background: white; border-radius: 20px; padding: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #e0e0e0; }
+        th { background: #667eea; color: white; }
+        .score-good { color: #48bb78; font-weight: bold; }
+        .score-average { color: #ed8936; font-weight: bold; }
+        .score-poor { color: #f56565; font-weight: bold; }
+        .back-btn { background: #718096; color: white; padding: 10px 20px; text-decoration: none; border-radius: 10px; display: inline-block; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <h2>📜 Quiz History</h2>
+        <a href="/student_dashboard">← Back to Dashboard</a>
+    </div>
+    
+    <div class="container">
+        <div class="card">
+            <h1>Your Previous Quiz Attempts</h1>
+            
+            {% if results and results|length > 0 %}
+            <table>
+                <tr>
+                    <th>Date</th>
+                    <th>Score</th>
+                    <th>Percentage</th>
+                    <th>Performance</th>
+                </tr>
+                {% for r in results %}
+                {% set score_percent = (r.score / r.total * 100) if r.total and r.total > 0 else 0 %}
+                <tr>
+                    <td>{{ r.date[:10] if r.date else 'N/A' }}</td>
+                    <td class="
+                        {% if score_percent >= 80 %}score-good
+                        {% elif score_percent >= 50 %}score-average
+                        {% else %}score-poor
+                        {% endif %}
+                    ">{{ r.score }}/{{ r.total }}</td>
+                    <td>{{ "%.1f"|format(score_percent) }}%</td>
+                    <td>
+                        {% if score_percent >= 80 %}🌟 Excellent
+                        {% elif score_percent >= 60 %}👍 Good
+                        {% elif score_percent >= 40 %}📚 Average
+                        {% else %}💪 Need Practice
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+            
+            <div style="margin-top: 20px; text-align: center;">
+                <strong>Total Attempts: {{ results|length }}</strong>
+                <br><br>
+                <a href="/student/analytics" class="back-btn" style="background: #667eea;">View Analytics</a>
+                <a href="/quiz" class="back-btn" style="background: #48bb78;">Take New Quiz</a>
+            </div>
+            
+            {% else %}
+            <div style="text-align: center; padding: 40px;">
+                <p>📭 No quiz attempts yet!</p>
+                <br>
+                <a href="/quiz" class="back-btn" style="background: #48bb78;">Take Your First Quiz</a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

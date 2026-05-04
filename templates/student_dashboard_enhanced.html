@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Dashboard</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f0f4ff; }
+        .navbar { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px 40px; display: flex; justify-content: space-between; }
+        .container { max-width: 1200px; margin: 50px auto; padding: 0 20px; }
+        .welcome-card { background: white; border-radius: 25px; padding: 40px; text-align: center; margin-bottom: 40px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+        h1 { color: #667eea; margin-bottom: 10px; }
+        .menu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; }
+        .menu-card { background: white; border-radius: 20px; padding: 35px; text-align: center; text-decoration: none; transition: 0.3s; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .menu-card:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.15); }
+        .menu-icon { font-size: 48px; margin-bottom: 15px; }
+        .menu-title { font-size: 20px; font-weight: bold; color: #333; margin-bottom: 10px; }
+        .menu-desc { color: #666; font-size: 14px; }
+        .stats { display: flex; gap: 20px; justify-content: center; margin-top: 15px; color: #667eea; }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <h2>📚 Quiz System</h2>
+        <div>
+            <span>Welcome, {{ name }}!</span>
+            <a href="/logout" style="color: white; margin-left: 20px;">Logout</a>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="welcome-card">
+            <h1>🎯 Ready for a Challenge?</h1>
+            <p style="color: #666; margin-top: 10px;">Test your knowledge with random questions. Good luck!</p>
+        </div>
+        
+        <div class="menu-grid">
+            <a href="/quiz" class="menu-card">
+                <div class="menu-icon">📝</div>
+                <div class="menu-title">Start Quiz</div>
+                <div class="menu-desc">20 random questions. Instant results!</div>
+            </a>
+            
+            <a href="/leaderboard" class="menu-card">
+                <div class="menu-icon">🏆</div>
+                <div class="menu-title">Leaderboard</div>
+                <div class="menu-desc">See top performers</div>
+            </a>
+            
+            <a href="/student/analytics" class="menu-card">
+                <div class="menu-icon">📊</div>
+                <div class="menu-title">My Analytics</div>
+                <div class="menu-desc">Track your progress with charts</div>
+            </a>
+            
+            <a href="/quiz-history" class="menu-card">
+                <div class="menu-icon">📜</div>
+                <div class="menu-title">Quiz History</div>
+                <div class="menu-desc">View all past attempts</div>
+            </a>
+        </div>
+    </div>
+</body>
+</html>

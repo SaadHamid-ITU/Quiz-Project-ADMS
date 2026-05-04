@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Question</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: #f0f4ff; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        .container { background: white; border-radius: 20px; padding: 40px; width: 600px; }
+        h1 { color: #667eea; margin-bottom: 30px; text-align: center; }
+        input, textarea { width: 100%; padding: 12px; margin: 10px 0; border: 2px solid #e0e0e0; border-radius: 8px; }
+        button { width: 100%; padding: 14px; background: #667eea; color: white; border: none; border-radius: 8px; cursor: pointer; margin-top: 20px; }
+        .back-btn { background: #718096; display: inline-block; text-align: center; text-decoration: none; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Add New Question</h1>
+        <form method="POST">
+            <textarea name="question" rows="3" placeholder="Enter question here..." required></textarea>
+            <input type="text" name="opt1" placeholder="Option 1" required>
+            <input type="text" name="opt2" placeholder="Option 2" required>
+            <input type="text" name="opt3" placeholder="Option 3" required>
+            <input type="text" name="opt4" placeholder="Option 4" required>
+            <input type="number" name="correct" min="1" max="4" placeholder="Correct option (1-4)" required>
+            <button type="submit">Add Question</button>
+        </form>
+        <a href="/admin/questions" class="back-btn" style="display: block; text-align: center;">Back to Questions</a>
+    </div>
+</body>
+</html>

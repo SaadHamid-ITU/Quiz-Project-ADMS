@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI Quiz Generator</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 40px; }
+        .container { max-width: 800px; margin: 0 auto; background: white; border-radius: 30px; padding: 40px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+        h1 { color: #667eea; margin-bottom: 10px; }
+        .subtitle { color: #666; margin-bottom: 30px; }
+        .method { background: #f7f9fc; border-radius: 20px; padding: 25px; margin-bottom: 30px; }
+        .method h2 { color: #667eea; margin-bottom: 15px; }
+        input, select, textarea { width: 100%; padding: 12px; margin: 10px 0; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 16px; }
+        button { width: 100%; padding: 14px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 10px; font-size: 16px; cursor: pointer; }
+        button:hover { opacity: 0.9; }
+        .message { background: #c6f6d5; color: #22543d; padding: 15px; border-radius: 10px; margin-bottom: 20px; }
+        .error { background: #fed7d7; color: #742a2a; }
+        .back-btn { background: #718096; display: inline-block; text-align: center; text-decoration: none; margin-top: 20px; padding: 12px 24px; border-radius: 10px; color: white; }
+        #loading { display: none; text-align: center; padding: 20px; color: #667eea; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🤖 AI Quiz Generator</h1>
+        <p class="subtitle">Generate questions automatically using Google Gemini AI</p>
+        
+        <div id="loading">⏳ Generating questions... Please wait...</div>
+        
+        {% if message %}
+        <div class="message">{{ message }}</div>
+        {% endif %}
+        
+        <div class="method">
+            <h2>📄 Upload PDF/Slides</h2>
+            <form id="pdfForm" enctype="multipart/form-data">
+                <input type="file" name="file" accept=".pdf" required>
+                <select name="num_questions">
+                    <option value="5">5 Questions</option>
+                    <option value="10" selected>10 Questions</option>
+                    <option value="20">20 Questions</option>
+                </select>
+                <button type="submit">Generate from PDF</button>
+            </form>
+        </div>
+        
+        <div class="method">
+            <h2>🌐 Generate from Topic</h2>
+            <form id="topicForm">
+                <input type="text" name="topic" placeholder="Enter topic (e.g., Python Programming, World War 2)" required>
+                <select name="num_questions">
+                    <option value="5">5 Questions</option>
+                    <option value="10" selected>10 Questions</option>
+                    <option value="20">20 Questions</option>
+                </select>
+                <button type="submit">Generate from Topic</button>
+            </form>
+        </div>
+        
+        <a href="/admin_dashboard" class="back-btn">← Back to Dashboard</a>
+    </div>
+    
+    <script>
+        // Handle PDF upload with AJAX
+        document.getElementById('pdfForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const loading = document.getElementById('loading');
+            loading.style.display = 'block';
+            
+            const formData = new FormData(e.target);
+            const response = await fetch('/api/upload-pdf', {
+                method: 'POST',
+                body: formData
+            });
+            const result = await response.json();
+            
+            loading.style.display = 'none';
+            if (result.success) {
+                alert(result.message);
+                window.location.reload();
+            } else {
+                alert('Error: ' + result.error);
+            }
+        });
+        
+        // Handle topic generation with AJAX
+        document.getElementById('topicForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const loading = document.getElementById('loading');
+            loading.style.display = 'block';
+            
+            const topic = e.target.topic.value;
+            const num_questions = e.target.num_questions.value;
+            
+            const response = await fetch('/api/generate-from-topic', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ topic, num_questions: parseInt(num_questions) })
+            });
+            const result = await response.json();
+            
+            loading.style.display = 'none';
+            if (result.success) {
+                alert(result.message);
+                window.location.reload();
+            } else {
+                alert('Error: ' + result.error);
+            }
+        });
+    </script>
+</body>
+</html>

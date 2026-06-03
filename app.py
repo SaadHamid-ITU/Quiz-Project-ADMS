@@ -19,11 +19,11 @@ app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
 # ============ CONFIGURE GROQ AI ============
-GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "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")
+GROQ_API_KEY = "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"
 groq_client = Groq(api_key=GROQ_API_KEY)
 
-MONGO_URI = os.environ.get("MONGO_URI", "mongodb+srv://quizuser:quiz123456@cluster0.q1gctop.mongodb.net/quizdb")
-client = MongoClient(MONGO_URI)
+client = MongoClient("mongodb://localhost:27017/")
+db = client["quizdb"]
 
 def login_required(f):
     @wraps(f)
@@ -482,5 +482,4 @@ def admin_results():
     return render_template("admin_results.html", results=results)
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port, debug=False)
+    app.run(debug=True)

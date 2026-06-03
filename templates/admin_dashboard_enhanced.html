@@ -4,29 +4,372 @@
     <title>Admin Dashboard</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', sans-serif; background: #f0f4ff; }
-        .navbar { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; }
-        .navbar a { color: white; text-decoration: none; margin-left: 20px; }
-        .container { max-width: 1400px; margin: 40px auto; padding: 0 20px; }
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 25px; margin-bottom: 40px; }
-        .stat-card { background: white; border-radius: 20px; padding: 25px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
-        .stat-card:hover { transform: translateY(-5px); }
-        .stat-number { font-size: 36px; font-weight: bold; color: #667eea; }
-        .stat-label { color: #666; margin-top: 10px; }
-        .chart-container { background: white; border-radius: 20px; padding: 25px; margin-bottom: 40px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
-        .menu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
-        .menu-card { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; border-radius: 20px; text-decoration: none; display: block; transition: transform 0.3s; }
-        .menu-card:hover { transform: translateY(-5px); }
-        .menu-icon { font-size: 40px; margin-bottom: 10px; }
-        .menu-title { font-size: 18px; font-weight: bold; }
-        h2 { margin-bottom: 20px; color: #333; }
-        .difficulty-stats { display: flex; gap: 20px; justify-content: center; margin-top: 20px; flex-wrap: wrap; }
-        .difficulty-box { padding: 20px; border-radius: 15px; text-align: center; min-width: 120px; }
-        .easy { background: #c6f6d5; color: #22543d; }
-        .medium { background: #feebc8; color: #7b341e; }
-        .hard { background: #fed7d7; color: #742a2a; }
-        .difficulty-number { font-size: 28px; font-weight: bold; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', 'Segoe UI', sans-serif;
+            min-height: 100vh;
+
+            background: linear-gradient(
+                135deg,
+                #0f172a 0%,
+                #111827 25%,
+                #1e293b 50%,
+                #312e81 75%,
+                #581c87 100%
+            );
+
+            color: white;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Background Glow Effects */
+        body::before,
+        body::after {
+            content: "";
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(100px);
+            opacity: 0.25;
+            z-index: 0;
+        }
+
+        body::before {
+            width: 350px;
+            height: 350px;
+            background: #7c3aed;
+            top: -120px;
+            left: -120px;
+        }
+
+        body::after {
+            width: 400px;
+            height: 400px;
+            background: #3b82f6;
+            bottom: -150px;
+            right: -150px;
+        }
+
+        /* NAVBAR */
+        .navbar {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            padding: 22px 45px;
+
+            background: rgba(255,255,255,0.08);
+            backdrop-filter: blur(18px);
+
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+
+        .navbar h2 {
+            font-size: 28px;
+            font-weight: 700;
+            color: white;
+        }
+
+        .navbar-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .navbar span {
+            color: rgba(255,255,255,0.75);
+        }
+
+        .navbar a {
+            text-decoration: none;
+            padding: 10px 18px;
+            border-radius: 12px;
+
+            background: linear-gradient(
+                135deg,
+                #6366f1,
+                #8b5cf6
+            );
+
+            color: white;
+            font-weight: 600;
+
+            transition: 0.3s;
+        }
+
+        .navbar a:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(139,92,246,0.4);
+        }
+
+        /* MAIN CONTAINER */
+        .container {
+            max-width: 1450px;
+            margin: 40px auto;
+            padding: 0 25px;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* STATS GRID */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            padding: 35px;
+            border-radius: 24px;
+
+            background: rgba(255,255,255,0.08);
+            backdrop-filter: blur(18px);
+
+            border: 1px solid rgba(255,255,255,0.12);
+
+            box-shadow:
+                0 8px 30px rgba(0,0,0,0.25),
+                inset 0 1px 1px rgba(255,255,255,0.08);
+
+            transition: 0.35s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: "";
+            position: absolute;
+            top: -50px;
+            right: -50px;
+
+            width: 140px;
+            height: 140px;
+
+            background: rgba(255,255,255,0.05);
+            border-radius: 50%;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow:
+                0 15px 40px rgba(0,0,0,0.35);
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 800;
+
+            background: linear-gradient(
+                135deg,
+                #a78bfa,
+                #60a5fa,
+                #e879f9
+            );
+
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            color: rgba(255,255,255,0.75);
+            font-size: 16px;
+        }
+
+        /* GLASS CONTAINERS */
+        .glass-box {
+            background: rgba(255,255,255,0.08);
+            backdrop-filter: blur(18px);
+
+            border: 1px solid rgba(255,255,255,0.12);
+
+            border-radius: 24px;
+            padding: 35px;
+
+            margin-bottom: 40px;
+
+            box-shadow:
+                0 8px 30px rgba(0,0,0,0.25),
+                inset 0 1px 1px rgba(255,255,255,0.08);
+        }
+
+        .glass-box h2 {
+            margin-bottom: 25px;
+            font-size: 28px;
+            color: white;
+        }
+
+        /* DIFFICULTY BOXES */
+        .difficulty-stats {
+            display: flex;
+            gap: 25px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .difficulty-box {
+            min-width: 180px;
+            padding: 25px;
+            border-radius: 20px;
+
+            text-align: center;
+
+            background: rgba(255,255,255,0.08);
+
+            border: 1px solid rgba(255,255,255,0.12);
+
+            transition: 0.3s ease;
+        }
+
+        .difficulty-box:hover {
+            transform: translateY(-6px);
+        }
+
+        .easy {
+            box-shadow: 0 0 25px rgba(72,187,120,0.25);
+        }
+
+        .medium {
+            box-shadow: 0 0 25px rgba(66,153,225,0.25);
+        }
+
+        .hard {
+            box-shadow: 0 0 25px rgba(245,101,101,0.25);
+        }
+
+        .difficulty-number {
+            font-size: 36px;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+
+        .easy .difficulty-number {
+            color: #4ade80;
+        }
+
+        .medium .difficulty-number {
+            color: #60a5fa;
+        }
+
+        .hard .difficulty-number {
+            color: #f87171;
+        }
+
+        /* MENU GRID */
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 25px;
+        }
+
+        .menu-card {
+            text-decoration: none;
+            color: white;
+
+            padding: 35px 25px;
+            border-radius: 24px;
+
+            background: rgba(255,255,255,0.08);
+            backdrop-filter: blur(18px);
+
+            border: 1px solid rgba(255,255,255,0.12);
+
+            text-align: center;
+
+            transition: 0.35s ease;
+
+            position: relative;
+            overflow: hidden;
+        }
+
+        .menu-card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+
+            background: linear-gradient(
+                135deg,
+                rgba(99,102,241,0.18),
+                rgba(168,85,247,0.18)
+            );
+
+            opacity: 0;
+            transition: 0.3s;
+        }
+
+        .menu-card:hover::before {
+            opacity: 1;
+        }
+
+        .menu-card:hover {
+            transform: translateY(-8px) scale(1.02);
+
+            box-shadow:
+                0 15px 35px rgba(139,92,246,0.25);
+        }
+
+        .menu-icon {
+            font-size: 52px;
+            margin-bottom: 15px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .menu-title {
+            font-size: 18px;
+            font-weight: 700;
+            position: relative;
+            z-index: 2;
+        }
+
+        canvas {
+            margin-top: 30px;
+        }
+        .chart-wrapper {
+    width: 100%;
+    max-width: 320px;
+    margin: 20px auto 0;
+}
+
+#difficultyChart {
+    height: 280px !important;
+}
+
+        /* MOBILE */
+        @media (max-width: 768px) {
+
+            .navbar {
+                padding: 18px 20px;
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .navbar h2 {
+                font-size: 24px;
+            }
+
+            .difficulty-box {
+                width: 100%;
+            }
+
+            .glass-box {
+                padding: 25px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -72,8 +415,9 @@
                     <div>Hard Questions</div>
                 </div>
             </div>
-            <canvas id="difficultyChart" width="400" height="200" style="margin-top: 20px;"></canvas>
-        </div>
+<div class="chart-wrapper">
+    <canvas id="difficultyChart"></canvas>
+</div>        </div>
         
         <!-- Quick Actions Menu -->
         <div class="menu-grid">
@@ -115,13 +459,8 @@
                     }]
                 },
                 options: {
-                    responsive: true,
-                    maintainAspectRatio: true,
-                    plugins: {
-                        legend: {
-                            position: 'bottom'
-                        }
-                    }
+    responsive: true,
+    maintainAspectRatio: false,
                 }
             });
         }, 100);

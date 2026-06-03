@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
     <title>Take Quiz</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -44,7 +45,8 @@
         
         <form action="/submit" method="POST" id="quizForm">
             {% for q in questions %}
-            <div class="question-card" data-qid="{{ loop.index0 }}">
+            {% set q_index = loop.index0 %}
+            <div class="question-card" data-qid="{{ q_index }}">
                 <div class="q-text">
                     <span class="difficulty-badge difficulty-{{ q.difficulty|default('Medium') }}">
                         {{ q.difficulty|default('Medium') }}
@@ -53,8 +55,8 @@
                 </div>
                 {% for idx, opt in q.shuffled_options %}
                 <div class="option">
-                    <input type="radio" name="answer_{{ loop.index0 }}" value="{{ idx }}" id="q{{ loop.index0 }}_{{ idx }}" onchange="updateProgress()">
-                    <label for="q{{ loop.index0 }}_{{ idx }}">{{ idx }}. {{ opt }}</label>
+                    <input type="radio" name="answer_{{ q_index }}" value="{{ idx }}" id="q{{ q_index }}_{{ idx }}">
+                    <label for="q{{ q_index }}_{{ idx }}">{{ opt }}</label>
                 </div>
                 {% endfor %}
             </div>
@@ -105,7 +107,7 @@
             }
         }
         
-        // Highlight selected option on click
+        // Highlight selected option on click and ensure radio is checked
         document.querySelectorAll('.option').forEach(function(opt) {
             opt.addEventListener('click', function() {
                 var card = this.closest('.question-card');
@@ -113,16 +115,26 @@
                     o.classList.remove('selected');
                 });
                 this.classList.add('selected');
+                var radio = this.querySelector('input[type="radio"]');
+                if (radio) {
+                    radio.checked = true;
+                    updateProgress();
+                }
             });
         });
         
-        // Also update progress when radio changes
+        // Handle keyboard navigation (Tab + Space/Arrow) for radio buttons
         document.querySelectorAll('input[type="radio"]').forEach(function(radio) {
             radio.addEventListener('change', function() {
+                var card = this.closest('.question-card');
+                card.querySelectorAll('.option').forEach(function(o) {
+                    o.classList.remove('selected');
+                });
+                this.closest('.option').classList.add('selected');
                 updateProgress();
             });
         });
-        
+
         // Initial progress update
         setTimeout(updateProgress, 100);
     </script>
